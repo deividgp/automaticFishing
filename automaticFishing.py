@@ -1,9 +1,9 @@
-import sys, time
-import pyautogui
+import sys, time, os, pyautogui, ctypes
 from pynput import keyboard
 from PIL import ImageGrab
 from pynput.keyboard import Key, Controller, Listener, KeyCode
 from tkinter import *
+from tkinter import messagebox
 
 keyboardController = Controller()
 counter = 0
@@ -68,32 +68,40 @@ def get_released(event):
         else:
             counter = 0
         
+def getXCoor():
+    global xCoor
+    if ImageGrab.grab().size == (1366, 768):
+        xCoor = 360
+    elif ImageGrab.grab().size == (1920, 1080):
+        xCoor = 500
 
-listener = keyboard.Listener(on_press=get_pressed,on_release=get_released)
+def restart_program():
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
 
-if ImageGrab.grab().size == (1366, 768):
-    xCoor = 360
-elif ImageGrab.grab().size == (1920, 1080):
-    xCoor = 500
+def isAdmin():
+    try:
+        is_admin = (os.getuid() == 0)
+    except AttributeError:
+        is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
+    return is_admin
 
-root = Tk()
-root.minsize(150, 75)
-root.title("Automatic fishing")
-#root.iconphoto(True, PhotoImage(file='salmon.png'))
+if not isAdmin():
+    messagebox.showerror("Error", "You have to run this program as administrator")
+else:
+    getXCoor()
+    listener = keyboard.Listener(on_press=get_pressed,on_release=get_released)
 
-introLabel = Label(root, text="Welcome to automatic fishing")
-instrucLabel = Label(root, text="Make sure to have Provision's Chalutier: Fishing installed on your computer and use windowed fullscreen on ESO")
-startButton = Button(root, text="Start", command=listener.start)
-#stopButton = Button(root, text="Stop", command=listener.stop)
+    root = Tk()
+    root.minsize(150, 125)
+    root.title("Automatic fishing")
+    #root.iconphoto(True, PhotoImage(file='salmon.png'))
 
-#introLabel.grid(row = 0, column = 0, columnspan = 1)
-#instrucLabel.grid(row = 1, column= 0)
-#startButton.grid(row = 2, column = 0)
-#stopButton.grid(row = 2, column = 1)
+    Label(root, text="Welcome to automatic fishing").pack()
+    Label(root, text="Make sure to have Provision's Chalutier: Fishing installed on your computer use windowed fullscreen on ESO").pack()
+    Label(root, text="If this program stops working click on 'Restart' and then on 'Start'").pack()
+    Button(root, text="Start", command=listener.start).pack()
+    #Button(root, text="Stop", command=listener.stop).pack()
+    Button(root, text="Restart", command=restart_program).pack()
 
-introLabel.pack()
-instrucLabel.pack()
-startButton.pack()
-#stopButton.pack()
-
-root.mainloop()
+    root.mainloop()
