@@ -89,19 +89,22 @@ def isAdmin():
 if not isAdmin():
     messagebox.showerror("Error", "You have to run this program as administrator")
 else:
-    getXCoor()
-    listener = keyboard.Listener(on_press=get_pressed,on_release=get_released)
+    if os.path.exists('../Documents/Elder Scrolls Online/live/AddOns/ProvisionsChalutier'):
+        messagebox.showerror("Error", "Provision's Chalutier: Fishing is not installed")
+    else:
+        getXCoor()
+        listener = keyboard.Listener(on_press=get_pressed,on_release=get_released)
 
-    root = Tk()
-    root.minsize(150, 125)
-    root.title("Automatic fishing")
-    #root.iconphoto(True, PhotoImage(file='salmon.png'))
+        root = Tk()
+        root.minsize(150, 125)
+        root.title("Automatic fishing")
+        #root.iconphoto(True, PhotoImage(file='salmon.png'))
 
-    Label(root, text="Welcome to automatic fishing").pack()
-    Label(root, text="Make sure to have Provision's Chalutier: Fishing installed on your computer use windowed fullscreen on ESO").pack()
-    Label(root, text="If this program stops working click on 'Restart' and then on 'Start'").pack()
-    Button(root, text="Start", command=listener.start).pack()
-    #Button(root, text="Stop", command=listener.stop).pack()
-    Button(root, text="Restart", command=restart_program).pack()
+        Label(root, text="Welcome to automatic fishing").pack()
+        Label(root, text="Make sure to have Provision's Chalutier: Fishing installed on your computer and use windowed fullscreen on ESO").pack()
+        Label(root, text="If this program stops working click on 'Restart' and then on 'Start' again").pack()
+        Button(root, text="Start", command=listener.start).pack()
+        #Button(root, text="Stop", command=listener.stop).pack()
+        Button(root, text="Restart", command=restart_program).pack()
 
-    root.mainloop()
+        root.mainloop()
